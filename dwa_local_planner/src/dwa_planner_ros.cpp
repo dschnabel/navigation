@@ -120,6 +120,8 @@ namespace dwa_local_planner {
         odom_helper_.setOdomTopic( odom_topic_ );
       }
       
+      latchedStopRotateController_ = new base_local_planner::LatchedStopRotateController(name);
+
       initialized_ = true;
 
       // Warn about deprecated parameters -- remove this block in N-turtle
@@ -145,7 +147,7 @@ namespace dwa_local_planner {
       return false;
     }
     //when we get a new plan, we also want to clear any latch we may have on goal tolerances
-    latchedStopRotateController_.resetLatching();
+    latchedStopRotateController_->resetLatching();
 
     ROS_INFO("Got new plan");
     return dp_->setPlan(orig_global_plan);
@@ -161,7 +163,7 @@ namespace dwa_local_planner {
       return false;
     }
 
-    if(latchedStopRotateController_.isGoalReached(&planner_util_, odom_helper_, current_pose_)) {
+    if(latchedStopRotateController_->isGoalReached(&planner_util_, odom_helper_, current_pose_)) {
       ROS_INFO("Goal reached");
       return true;
     } else {
@@ -283,14 +285,14 @@ namespace dwa_local_planner {
     // update plan in dwa_planner even if we just stop and rotate, to allow checkTrajectory
     dp_->updatePlanAndLocalCosts(current_pose_, transformed_plan, costmap_ros_->getRobotFootprint());
 
-    if (latchedStopRotateController_.isPositionReached(&planner_util_, current_pose_)) {
+    if (latchedStopRotateController_->isPositionReached(&planner_util_, current_pose_)) {
       //publish an empty plan because we've reached our goal position
       std::vector<geometry_msgs::PoseStamped> local_plan;
       std::vector<geometry_msgs::PoseStamped> transformed_plan;
       publishGlobalPlan(transformed_plan);
       publishLocalPlan(local_plan);
       base_local_planner::LocalPlannerLimits limits = planner_util_.getCurrentLimits();
-      return latchedStopRotateController_.computeVelocityCommandsStopRotate(
+      return latchedStopRotateController_->computeVelocityCommandsStopRotate(
           cmd_vel,
           limits.getAccLimits(),
           dp_->getSimPeriod(),

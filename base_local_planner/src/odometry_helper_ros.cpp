@@ -77,7 +77,7 @@ void OdometryHelperRos::getRobotVel(geometry_msgs::PoseStamped& robot_vel) {
     robot_vel.header.frame_id = base_odom_.child_frame_id;
   }
   robot_vel.pose.position.x = global_vel.linear.x;
-  robot_vel.pose.position.y = global_vel.linear.y;
+  robot_vel.pose.position.y = 0;
   robot_vel.pose.position.z = 0;
   tf2::Quaternion q;
   q.setRPY(0, 0, global_vel.angular.z);

@@ -136,7 +136,7 @@ namespace dwa_local_planner {
       sim_period_ = 0.05;
     } else {
       double controller_frequency = 0;
-      private_nh.param(controller_frequency_param_name, controller_frequency, 20.0);
+      private_nh.param(controller_frequency_param_name, controller_frequency, 10.0);
       if(controller_frequency > 0) {
         sim_period_ = 1.0 / controller_frequency;
       } else {

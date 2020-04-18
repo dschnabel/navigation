@@ -146,7 +146,7 @@ namespace dwa_local_planner {
       bool setup_;
       geometry_msgs::PoseStamped current_pose_;
 
-      base_local_planner::LatchedStopRotateController latchedStopRotateController_;
+      base_local_planner::LatchedStopRotateController *latchedStopRotateController_;
 
 
       bool initialized_;
